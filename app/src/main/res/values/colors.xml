@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_white">#f9f6f2</color>
+    <color name="text_black">#776e65</color>
+    <color name="text_brown">#d6cdc4</color>
+    <color name="background">#faf800</color>
+    <color name="colorPrimary">#00bcd4</color>
+    <color name="colorPrimaryDark">#0000a7</color>
+    <color name="colorAccent">#ff0000</color>
+    <array name="cell_colors">
+        <item>#78909C</item>
+        <item>#455A64</item>
+        <item>#795548</item>
+        <item>#4E342E</item>
+        <item>#0091EA</item>
+        <item>#2962FF</item>
+        <item>#0D47A1</item>
+        <item>#1A237E</item>
+        <item>#6200EA</item>
+        <item>#558B2F</item>
+        <item>#00695C</item>
+        <item>#1B5E20</item>
+        <item>#E040FB</item>
+        <item>#AA00FF</item>
+        <item>#C51162</item>
+        <item>#880E4F</item>
+        <item>#FFD600</item>
+        <item>#AEEA00</item>
+        <item>#827717</item>
+        <item>#FF6D00</item>
+        <item>#DD2C00</item>
+        <item>#BF360C</item>
+        <item>#D50000</item>
+        <item>#B71C1C</item>
+    </array>
+</resources>
