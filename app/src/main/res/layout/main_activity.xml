@@ -12,33 +12,124 @@
         <RelativeLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:padding="10dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true"
+            android:padding="10dp">
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="@string/header"
                 android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"
-                android:textSize="35sp"
-                android:layout_marginLeft="30dp"
-                android:layout_height="wrap_content" />
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvHighScorel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Hogh Score"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvScorel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/tvHighScorel"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="Score"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvHighScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tvHighScorel"
+                android:layout_toEndOf="@+id/tvScorel"
+                android:gravity="center"
+                android:text="00000000000000"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/tvScorel"
+                android:layout_alignStart="@+id/tvScorel"
+                android:layout_below="@+id/tvScorel"
+                android:gravity="center"
+                android:text="000000000000"
+                android:textStyle="bold" />
+
         </RelativeLayout>
 
-
-        <com.appzone.game.board.MainView
-            android:id="@+id/gameBoard"
+        <RelativeLayout
+            android:id="@+id/scoreBord"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/instruction"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/header"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
 
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="Target : 2048"
+                android:textStyle="bold" />
 
-            ads:font_name="ClearSans-Bold.ttf"
-            ads:item_background="@color/colorPrimary"
-            ads:item_fade="@color/colorPrimary"
-            ads:item_lightup="@color/colorPrimaryDark" />
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/tvUndu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_toStartOf="@+id/reset"
+                ads:srcCompat="@drawable/ic_action_undo"
+                ads:tint="@color/colorPrimaryDark" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                ads:srcCompat="@drawable/ic_action_reset"
+                ads:tint="@color/colorPrimaryDark" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/instruction"
+            android:layout_below="@+id/scoreBord"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <com.appzone.game.board.MainView
+                android:id="@+id/gameBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                ads:font_name="ClearSans-Bold.ttf"
+                ads:item_background="@color/colorPrimary"
+                ads:item_fade="@color/colorPrimary"
+                ads:item_lightup="@color/colorPrimaryDark" />
+        </FrameLayout>
+
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/instruction"

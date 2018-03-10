@@ -123,25 +123,7 @@ class InputListener implements View.OnTouchListener {
                 veryLastDirection = 1;
                 //"Menu" inputs
                 if (!hasMoved) {
-                    if (iconPressed(mView.sXNewGame, mView.sYIcons)) {
-                        if (!mView.game.gameLost()) {
-                            new AlertDialog.Builder(mView.getContext())
-                                    .setPositiveButton(com.appzone.game.R.string.reset, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            mView.game.newGame();
-                                        }
-                                    })
-                                    .setNegativeButton(com.appzone.game.R.string.continue_game, null)
-                                    .setTitle(com.appzone.game.R.string.reset_dialog_title)
-                                    .setMessage(com.appzone.game.R.string.reset_dialog_message)
-                                    .show();
-                        } else {
-                            mView.game.newGame();
-                        }
-                    } else if (iconPressed(mView.sXUndo, mView.sYIcons)) {
-                        mView.game.revertUndoState();
-                    } else if (isTap(2) && inRange(mView.startingX, x, mView.endingX)
+                    if (isTap() && inRange(mView.startingX, x, mView.endingX)
                             && inRange(mView.startingY, x, mView.endingY) && mView.continueButtonEnabled) {
                         mView.game.setEndlessMode();
                     }
@@ -154,16 +136,11 @@ class InputListener implements View.OnTouchListener {
         return (x - startingX) * (x - startingX) + (y - startingY) * (y - startingY);
     }
 
-    private boolean iconPressed(int sx, int sy) {
-        return isTap(1) && inRange(sx, x, sx + mView.iconSize)
-                && inRange(sy, y, sy + mView.iconSize);
-    }
-
     private boolean inRange(float starting, float check, float ending) {
         return (starting <= check && check <= ending);
     }
 
-    private boolean isTap(int factor) {
-        return pathMoved() <= mView.iconSize * factor;
+    private boolean isTap() {
+        return pathMoved() <= mView.cellSize ;
     }
 }

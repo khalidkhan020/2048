@@ -1,19 +1,22 @@
 package com.appzone.game.activitys;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.TextView;
 
-import com.appzone.game.board.MainView;
 import com.appzone.game.R;
+import com.appzone.game.board.MainView;
 import com.appzone.game.board.model.Tile;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainView.OnScoreUpdate {
 
     private static final String WIDTH = "width";
     private static final String HEIGHT = "height";
@@ -26,18 +29,25 @@ public class MainActivity extends AppCompatActivity {
     private static final String UNDO_GAME_STATE = "undo game state";
     private MainView view;
     AdView adView;
+    TextView  tvMode, tvHighScore, tvScore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // view = new MainView(this);
+        // view = new MainView(this);
         setContentView(R.layout.main_activity);
-        view=findViewById(R.id.gameBoard);
+        view = findViewById(R.id.gameBoard);
         adView = findViewById(R.id.adView);
+        tvHighScore = findViewById(R.id.tvHighScore);
+        tvScore = findViewById(R.id.tvScore);
+        findViewById(R.id.tvUndu).setOnClickListener(this);
+        findViewById(R.id.reset).setOnClickListener(this);
+
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         view.hasSaveState = settings.getBoolean("save_state", false);
-
+        view.setOnScoreUpdate(this);
         if (savedInstanceState != null) {
             if (savedInstanceState.getBoolean("hasState")) {
                 load();
@@ -120,10 +130,8 @@ public class MainActivity extends AppCompatActivity {
         view.game.aGrid.cancelAnimations();
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        for (int x = 0; x < view.game.grid.field.length; x++)
-        {
-            for (int y = 0; y < view.game.grid.field[0].length; y++)
-            {
+        for (int x = 0; x < view.game.grid.field.length; x++) {
+            for (int y = 0; y < view.game.grid.field[0].length; y++) {
                 int value = settings.getInt(x + " " + y, -1);
                 if (value > 0) {
                     view.game.grid.field[x][y] = new Tile(x, y, value);
@@ -146,5 +154,42 @@ public class MainActivity extends AppCompatActivity {
         view.game.canUndo = settings.getBoolean(CAN_UNDO, view.game.canUndo);
         view.game.gameState = settings.getInt(GAME_STATE, view.game.gameState);
         view.game.lastGameState = settings.getInt(UNDO_GAME_STATE, view.game.lastGameState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvUndu:
+                view.game.revertUndoState();
+                break;
+            case R.id.reset:
+                if (!view.game.gameLost()) {
+                    new AlertDialog.Builder(this)
+                            .setPositiveButton(com.appzone.game.R.string.reset, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    view.game.newGame();
+                                }
+                            })
+                            .setNegativeButton(com.appzone.game.R.string.continue_game, null)
+                            .setTitle(com.appzone.game.R.string.reset_dialog_title)
+                            .setMessage(com.appzone.game.R.string.reset_dialog_message)
+                            .show();
+                } else {
+                    view.game.newGame();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onScoreUpdated() {
+        tvHighScore.setText(view.game.highScore + "");
+        tvScore.setText(view.game.score + "");
+    }
+
+    @Override
+    public void onEndLessMode() {
+
     }
 }
