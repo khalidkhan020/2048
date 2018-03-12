@@ -1,20 +1,40 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        releaseConfig {
+            keyAlias 'tetris'
+            keyPassword 'Khan@007K'
+            storeFile file('/Users/khalid/Downloads/tet_keystore.jks')
+            storePassword 'Khan@007K'
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.appzone.game"
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.0.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary=true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
-        release {
+        debug {
+            debuggable true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
         }
     }
 }

@@ -7,25 +7,69 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/text_white">
+        android:background="@color/text_white"
+        android:paddingTop="10dp">
 
         <RelativeLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:padding="10dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:text="@string/header"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
+
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/makeAddFree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/ivShare"
+                android:layout_toStartOf="@+id/ivShare"
+                ads:srcCompat="@drawable/ic_addfree" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/ivShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                ads:srcCompat="@drawable/ic_share"
+                ads:tint="@color/colorPrimaryDark" />
+
+        </RelativeLayout>
+        <View
+            android:id="@+id/div1"
+            android:layout_width="match_parent"
+            android:layout_height=".5dp"
+            android:background="@color/lightestGreay"
+            android:layout_below="@+id/header" />
+        <RelativeLayout
+            android:id="@+id/scoreBord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/div1"
+            android:padding="10dp">
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/challenge_2048"
+                android:textStyle="bold" />
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tvHighScorel"
                 android:layout_width="wrap_content"
@@ -44,6 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/tvHighScorel"
                 android:layout_toStartOf="@+id/tvHighScorel"
                 android:gravity="center"
                 android:paddingLeft="30dp"
@@ -59,6 +104,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/tvHighScorel"
                 android:layout_toEndOf="@+id/tvScorel"
+                android:layout_toRightOf="@+id/tvScorel"
                 android:gravity="center"
                 android:text="00000000000000"
                 android:textStyle="bold" />
@@ -68,6 +114,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/tvScorel"
+                android:layout_alignLeft="@+id/tvScorel"
+                android:layout_alignRight="@+id/tvScorel"
                 android:layout_alignStart="@+id/tvScorel"
                 android:layout_below="@+id/tvScorel"
                 android:gravity="center"
@@ -76,45 +124,10 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/scoreBord"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/header"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:text="Target : 2048"
-                android:textStyle="bold" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/tvUndu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_toStartOf="@+id/reset"
-                ads:srcCompat="@drawable/ic_action_undo"
-                ads:tint="@color/colorPrimaryDark" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                ads:srcCompat="@drawable/ic_action_reset"
-                ads:tint="@color/colorPrimaryDark" />
-        </RelativeLayout>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/instruction"
+            android:layout_above="@+id/actionBoard"
             android:layout_below="@+id/scoreBord"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp">
@@ -130,16 +143,36 @@
                 ads:item_lightup="@color/colorPrimaryDark" />
         </FrameLayout>
 
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/instruction"
+        <RelativeLayout
+            android:id="@+id/actionBoard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_above="@+id/lladd"
-            android:gravity="center"
-            android:text="@string/instructions"
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/tvUndu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:layout_toLeftOf="@+id/reset"
+                android:layout_toStartOf="@+id/reset"
+                ads:srcCompat="@drawable/ic_action_undo"
+                ads:tint="@color/colorPrimaryDark" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:layout_alignParentRight="true"
+                ads:srcCompat="@drawable/ic_action_reset"
+                ads:tint="@color/colorPrimaryDark" />
+        </RelativeLayout>
 
         <FrameLayout
             android:id="@+id/lladd"

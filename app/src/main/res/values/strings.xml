@@ -14,11 +14,12 @@
     <string name="continue_game">Cancel</string>
     <string name="reset_dialog_title">Reset game?</string>
     <string name="reset_dialog_message">Are you sure you wish to reset the game?</string>
-    <string name="title_activity_home">Home</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="ad_unit">ca-app-pub-7563654685686304/8865735229</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="ad_unit" translatable="false">ca-app-pub-7563654685686304/8865735229</string>
+    <string name="challenge_2048" translatable="false">Challenge : 2048</string>
+    <string name="share_text" translatable="false">https://uy2d5.app.goo.gl/zgxL Only Genius accept this challenge of making 2048 Tile. Prove me you are genius</string>
 </resources>

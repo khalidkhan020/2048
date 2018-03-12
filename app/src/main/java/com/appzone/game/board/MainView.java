@@ -231,7 +231,7 @@ public class MainView extends View {
             }
         }
         BitmapDrawable displayOverlay = null;
-        if (game.gameWon())
+        if (game.isGameWon())
         {
             if (game.canContinue()) {
                 continueButtonEnabled = true;
@@ -239,7 +239,7 @@ public class MainView extends View {
             } else {
                 displayOverlay = winGameFinalOverlay;
             }
-        } else if (game.gameLost())
+        } else if (game.isGameLost())
             displayOverlay = loseGameOverlay;
 
 

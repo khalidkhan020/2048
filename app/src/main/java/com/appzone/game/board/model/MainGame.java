@@ -5,10 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.appzone.game.board.MainView;
-import com.appzone.game.board.model.AnimationGrid;
-import com.appzone.game.board.model.Cell;
-import com.appzone.game.board.model.Grid;
-import com.appzone.game.board.model.Tile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,16 +150,16 @@ public class MainGame {
         }
     }
 
-    public boolean gameWon() {
+    public boolean isGameWon() {
         return (gameState > 0 && gameState % 2 != 0);
     }
 
-    public boolean gameLost() {
+    public boolean isGameLost() {
         return (gameState == GAME_LOST);
     }
 
     public boolean isActive() {
-        return !(gameWon() || gameLost());
+        return !(isGameWon() || isGameLost());
     }
 
     public void move(int direction) {
@@ -180,41 +176,43 @@ public class MainGame {
 
         prepareTiles();
 
-        for (int xx : traversalsX) {
-            for (int yy : traversalsY) {
+        for (int xx : traversalsX)
+        {
+            for (int yy : traversalsY)
+            {
                 Cell cell = new Cell(xx, yy);
                 Tile tile = grid.getCellContent(cell);
 
-                if (tile != null) {
+                if (tile != null)
+                {
                     Cell[] positions = findFarthestPosition(cell, vector);
                     Tile next = grid.getCellContent(positions[1]);
-
-                    if (next != null && next.getValue() == tile.getValue() && next.getMergedFrom() == null) {
+                    if (next != null && next.getValue() == tile.getValue() && next.getMergedFrom() == null)
+                    {
                         Tile merged = new Tile(positions[1], tile.getValue() * 2);
                         Tile[] temp = {tile, next};
                         merged.setMergedFrom(temp);
-
                         grid.insertTile(merged);
                         grid.removeTile(tile);
-
                         // Converge the two tiles' positions
                         tile.updatePosition(positions[1]);
-
                         int[] extras = {xx, yy};
-                        aGrid.startAnimation(merged.getX(), merged.getY(), MOVE_ANIMATION,
-                                MOVE_ANIMATION_TIME, 0, extras); //Direction: 0 = MOVING MERGED
-                        aGrid.startAnimation(merged.getX(), merged.getY(), MERGE_ANIMATION,
-                                SPAWN_ANIMATION_TIME, MOVE_ANIMATION_TIME, null);
+                        aGrid.startAnimation(merged.getX(), merged.getY(), MOVE_ANIMATION, MOVE_ANIMATION_TIME, 0, extras); //Direction: 0 = MOVING MERGED
+                        aGrid.startAnimation(merged.getX(), merged.getY(), MERGE_ANIMATION, SPAWN_ANIMATION_TIME, MOVE_ANIMATION_TIME, null);
 
                         // Update the score
                         score = score + merged.getValue();
                         highScore = Math.max(score, highScore);
 
                         // The mighty 2048 tile
-                        if (merged.getValue() >= winValue() && !gameWon()) {
+                        if (merged.getValue() >= winValue() && !isGameWon())
+                        {
                             gameState = gameState + GAME_WIN; // Set win state
                             endGame();
                         }
+                        if(spetialTileValueFind!=null&&merged.getValue() >= 16 )
+                            spetialTileValueFind.spetialFound(merged.getValue());
+
                     } else {
                         moveTile(tile, positions[0]);
                         int[] extras = {xx, yy, 0};
@@ -238,7 +236,7 @@ public class MainGame {
     }
 
     private void checkLose() {
-        if (!movesAvailable() && !gameWon()) {
+        if (!movesAvailable() && !isGameWon()) {
             gameState = GAME_LOST;
             endGame();
         }
@@ -349,5 +347,20 @@ public class MainGame {
 
     public boolean canContinue() {
         return !(gameState == GAME_ENDLESS || gameState == GAME_ENDLESS_WON);
+    }
+
+    public OnSpetialTileValueFind getSpetialTileValueFind() {
+        return spetialTileValueFind;
+    }
+
+    public void setSpetialTileValueFind(OnSpetialTileValueFind spetialTileValueFind) {
+        this.spetialTileValueFind = spetialTileValueFind;
+    }
+
+   private OnSpetialTileValueFind spetialTileValueFind;
+    public  interface OnSpetialTileValueFind
+    {
+        void spetialFound(int value);
+
     }
 }

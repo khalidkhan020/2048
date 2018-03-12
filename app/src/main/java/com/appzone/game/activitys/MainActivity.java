@@ -2,21 +2,30 @@ package com.appzone.game.activitys;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.appzone.game.R;
 import com.appzone.game.board.MainView;
+import com.appzone.game.board.model.MainGame;
 import com.appzone.game.board.model.Tile;
+import com.appzone.game.util.IabResult;
+import com.appzone.game.util.Inventory;
+import com.appzone.game.util.Purchase;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainView.OnScoreUpdate {
+public class MainActivity extends BillingBaseActivity implements View.OnClickListener, MainView.OnScoreUpdate, MainGame.OnSpetialTileValueFind {
 
     private static final String WIDTH = "width";
     private static final String HEIGHT = "height";
@@ -28,23 +37,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String GAME_STATE = "game state";
     private static final String UNDO_GAME_STATE = "undo game state";
     private MainView view;
-    AdView adView;
-    TextView  tvMode, tvHighScore, tvScore;
+    private AdView adView;
+    private InterstitialAd mInterstitialAd;
+    TextView tvMode, tvHighScore, tvScore;
+    AppCompatImageView makeAddFree, tvShare;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // view = new MainView(this);
         setContentView(R.layout.main_activity);
         view = findViewById(R.id.gameBoard);
         adView = findViewById(R.id.adView);
+        tvShare = findViewById(R.id.ivShare);
         tvHighScore = findViewById(R.id.tvHighScore);
         tvScore = findViewById(R.id.tvScore);
         findViewById(R.id.tvUndu).setOnClickListener(this);
+        tvShare.setOnClickListener(this);
         findViewById(R.id.reset).setOnClickListener(this);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        makeAddFree = findViewById(R.id.makeAddFree);
+        makeAddFree.setOnClickListener(this);
+        view.game.setSpetialTileValueFind(this);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         view.hasSaveState = settings.getBoolean("save_state", false);
         view.setOnScoreUpdate(this);
@@ -53,7 +65,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 load();
             }
         }
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-7563654685686304/5322942009");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
 
+    }
+
+    @Override
+    protected void onInventoryQueryFinished(IabResult result, Inventory inventory) {
+        Purchase gasYearly = inventory.getPurchase(SKU_ADDFREE_YEARLY);
+        if (gasYearly != null && gasYearly.isAutoRenewing()) {
+            mInfiniteGasSku = SKU_ADDFREE_YEARLY;
+            mAutoRenewEnabled = true;
+        } else {
+            mInfiniteGasSku = "";
+            mAutoRenewEnabled = false;
+        }
+        mSubscribedToInfiniteGas = (gasYearly != null && verifyDeveloperPayload(gasYearly));
+        hideAds(mSubscribedToInfiniteGas);
     }
 
     @Override
@@ -163,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 view.game.revertUndoState();
                 break;
             case R.id.reset:
-                if (!view.game.gameLost()) {
+                if (!view.game.isGameLost()) {
                     new AlertDialog.Builder(this)
                             .setPositiveButton(com.appzone.game.R.string.reset, new DialogInterface.OnClickListener() {
                                 @Override
@@ -179,9 +216,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     view.game.newGame();
                 }
                 break;
+            case R.id.makeAddFree:
+                onAddfree(v);
+                break;
+            case R.id.ivShare:
+            if(!isSharing) {
+                isSharing = true;
+            Thread thread=new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent sendIntent = new Intent();
+
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text));
+                    sendIntent.setType("text/plain");
+                    sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                    startActivity(Intent.createChooser(sendIntent, "Share with..."));
+                    isSharing = false;
+                }
+            });
+            thread.start();
+
+            }
+                break;
         }
     }
-
+    boolean isSharing=false;
     @Override
     public void onScoreUpdated() {
         tvHighScore.setText(view.game.highScore + "");
@@ -189,7 +249,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onEndLessMode() {
+    protected void hideAds(boolean hide) {
+        if (hide) {
+            makeAddFree.setVisibility(View.GONE);
+            adView.setVisibility(View.GONE);
+            adView.destroy();
+        } else {
+            makeAddFree.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+    }
 
+    @Override
+    public void onEndLessMode() {
+        tvMode.setText("Endless Mode Enabled.");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
+    }
+
+    @Override
+    public void spetialFound(int value) {
+        if (!mSubscribedToInfiniteGas)
+            if (value > 512 && mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
     }
 }
